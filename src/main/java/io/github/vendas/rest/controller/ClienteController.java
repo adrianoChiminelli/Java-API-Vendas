@@ -49,7 +49,7 @@ public class ClienteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
         try {
-            clienteService.updateCliente(cliente);
+            clienteService.updateCliente(id, cliente);
         } catch (InvalidCPFException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

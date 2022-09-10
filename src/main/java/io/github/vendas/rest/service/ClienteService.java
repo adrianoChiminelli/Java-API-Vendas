@@ -49,12 +49,14 @@ public class ClienteService {
                         () -> new ClienteNotFoundExceprion("Cliente de id " + id + ", não encontrado!"));
     }
 
-    public void updateCliente(Cliente cliente) throws InvalidCPFException {
+    public void updateCliente(Long id, Cliente cliente) throws InvalidCPFException {
         if (cpfManager.checkCPF(cliente.getCpf())){
 
-            clienteRepo.findById(cliente.getId())
-                    .ifPresentOrElse(clienteSalvo -> clienteRepo.save(cliente),
-                            () -> new ClienteNotFoundExceprion("Cliente de id " + cliente.getId() + ", não encontrado!"));
+            clienteRepo.findById(id)
+                    .ifPresentOrElse(c -> {
+                                cliente.setId(id);
+                                clienteRepo.save(cliente);
+                            }, () -> new ClienteNotFoundExceprion("Cliente de id " + id + ", não encontrado!"));
 
         } else {
             throw new InvalidCPFException("CPF Informado é inválido.");

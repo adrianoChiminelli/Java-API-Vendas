@@ -31,10 +31,13 @@ public class ProdutoService {
         return produtoRepo.save(produto);
     }
 
-    public void updateProduto (Produto produto) {
-        produtoRepo.findById(produto.getId())
-                .ifPresentOrElse(produtoSalvo -> produtoRepo.save(produto),
-                        () -> new ProdutoNotFoundException("Produto de id: " + produto.getId() + ", não encontrado!"));
+    public void updateProduto (Long id, Produto produto) {
+        produtoRepo.findById(id)
+                .ifPresentOrElse(p -> {
+                            produto.setId(id);
+                            produtoRepo.save(produto);
+                        },
+                        () -> new ProdutoNotFoundException("Produto de id: " + id + ", não encontrado!"));
     }
 
     public void deleteProduto(Long id) {

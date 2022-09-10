@@ -48,8 +48,8 @@ public class ProdutoController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateProduto(@RequestBody Produto produto) {
-        produtoService.updateProduto(produto);
+    public void updateProduto(@PathVariable Long id, @RequestBody Produto produto) {
+        produtoService.updateProduto(id, produto);
     }
 
 }
