@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @Constraint(validatedBy = NotEmptyListValidator.class)
-public @interface NotEmptyList {
+public @interface NotEmptySet {
 
     String message() default "Lista de itens não pode estar vazia!";
 

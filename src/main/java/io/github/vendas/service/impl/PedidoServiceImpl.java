@@ -11,6 +11,7 @@ import io.github.vendas.domain.repository.ProdutoRepo;
 import io.github.vendas.exceptions.ClienteNotFoundException;
 import io.github.vendas.exceptions.PedidoNotFoundException;
 import io.github.vendas.exceptions.ProdutoNotFoundException;
+import io.github.vendas.exceptions.ProdutoOutOfStockException;
 import io.github.vendas.rest.dto.ItemPedidoDTO;
 import io.github.vendas.rest.dto.PedidoDTO;
 import io.github.vendas.service.PedidoService;
@@ -94,6 +95,7 @@ public class PedidoServiceImpl implements PedidoService {
         pedidoRepo.save(pedido);
     }
 
+    @Transactional
     private Set<ItemPedido> converteLista (Set<ItemPedidoDTO> itensPedido, Pedido pedido) {
         return itensPedido
                 .stream()
@@ -101,7 +103,17 @@ public class PedidoServiceImpl implements PedidoService {
                     Produto produto = produtoRepo.findById(item.getIdProduto())
                             .orElseThrow(() -> new ProdutoNotFoundException("Produto de id: " + item.getIdProduto() + ", não encontrado."));
 
-                        return new ItemPedido(pedido, produto, item.getQuantidade());
+                    Integer quantidadeEstoque = produto.getQuantidadeEstoque();
+                    Integer quantidadePedido = item.getQuantidade();
+
+                    if(quantidadePedido > quantidadeEstoque) {
+                        throw new ProdutoOutOfStockException("Quantidade do pedido execede a quantidade em estoque." +
+                                " Quantidade em estoque: " + quantidadeEstoque + ".");
+                    } else {
+                        produto.setQuantidadeEstoque(quantidadeEstoque - quantidadePedido);
+                        produtoRepo.save(produto);
+                        return new ItemPedido(pedido, produto, quantidadePedido);
+                    }
                 })
                 .collect(Collectors.toSet());
     }

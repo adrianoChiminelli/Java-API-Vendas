@@ -1,9 +1,6 @@
 package io.github.vendas.rest.controller;
 
-import io.github.vendas.exceptions.ClienteNotFoundException;
-import io.github.vendas.exceptions.CPFAlreadyExistsException;
-import io.github.vendas.exceptions.PedidoNotFoundException;
-import io.github.vendas.exceptions.ProdutoNotFoundException;
+import io.github.vendas.exceptions.*;
 import io.github.vendas.rest.ApiErrors;
 import static org.springframework.http.HttpStatus.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -54,6 +51,13 @@ public class ApplicationControllerAdvice {
                 .collect(Collectors.toList());
 
         return new ApiErrors(errors);
+    }
+
+    @ExceptionHandler(ProdutoOutOfStockException.class)
+    @ResponseStatus(INSUFFICIENT_STORAGE)
+    public ApiErrors handleProdutoOutOfStockException(ProdutoOutOfStockException ex) {
+        String message = ex.getMessage();
+        return new ApiErrors(message);
     }
 
 }
