@@ -9,6 +9,7 @@ import io.github.vendas.domain.repository.ItemPedidoRepo;
 import io.github.vendas.domain.repository.PedidoRepo;
 import io.github.vendas.domain.repository.ProdutoRepo;
 import io.github.vendas.exceptions.ClienteNotFoundException;
+import io.github.vendas.exceptions.PedidoNotFoundException;
 import io.github.vendas.exceptions.ProdutoNotFoundException;
 import io.github.vendas.rest.dto.ItemPedidoDTO;
 import io.github.vendas.rest.dto.PedidoDTO;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -40,10 +42,10 @@ public class PedidoServiceImpl implements PedidoService {
         Pedido novoPedido = new Pedido();
         novoPedido.setCliente(cliente);
         novoPedido.setDataPedido(LocalDate.now());
-        novoPedido.setValorTotal(dto.getValorTotal());
 
         Set<ItemPedido> itens = converteLista(dto.getItens(), novoPedido);
 
+        novoPedido.setValorTotal(calcularValorTotal(itens));
         pedidoRepo.save(novoPedido);
         itemPedidoRepo.saveAll(itens);
         novoPedido.setItensPedido(itens);
@@ -56,6 +58,21 @@ public class PedidoServiceImpl implements PedidoService {
         return pedidoRepo.findAll();
     }
 
+    @Transactional
+    @Override
+    public void deletePedido(Long id) {
+        pedidoRepo.findById(id)
+                .ifPresentOrElse(pedido -> {
+                    itemPedidoRepo.deleteAll(pedido.getItensPedido());
+                    pedidoRepo.deleteById(id);
+                }, () -> new PedidoNotFoundException("pedido de id: " + id + ", não encontrado!"));
+    }
+
+    @Override
+    public Set<ItemPedido> findItemPedidoByPedidoId(Long id) {
+        return itemPedidoRepo.FindByPedido(id);
+    }
+
     private Set<ItemPedido> converteLista (Set<ItemPedidoDTO> itensPedido, Pedido pedido) {
         return itensPedido
                 .stream()
@@ -65,6 +82,20 @@ public class PedidoServiceImpl implements PedidoService {
                     return new ItemPedido(pedido, produto, item.getQuantidade());
                 })
                 .collect(Collectors.toSet());
+    }
+
+    private BigDecimal calcularValorTotal (Set<ItemPedido> itemPedidos){
+
+        return BigDecimal.valueOf(
+                itemPedidos.stream()
+                        .mapToDouble(item -> {
+                            Integer quantidade = item.getQuantidade();
+                            Double preco = item.getProduto()
+                                    .getPreco().doubleValue();
+                            return quantidade * preco;
+                        })
+                        .sum()
+        ).setScale(2);
     }
 
 }

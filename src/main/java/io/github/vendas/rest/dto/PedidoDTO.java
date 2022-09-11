@@ -13,7 +13,6 @@ import java.util.Set;
 public class PedidoDTO {
 
     private Long idCliente;
-    private BigDecimal valorTotal;
     private Set<ItemPedidoDTO> itens;
 }
 
