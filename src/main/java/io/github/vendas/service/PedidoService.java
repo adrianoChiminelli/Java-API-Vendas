@@ -18,4 +18,8 @@ public interface PedidoService {
     void deletePedido(Long id);
 
     Set<ItemPedido> findItemPedidoByPedidoId(Long id);
+
+    Pedido getPedidoById(Long id);
+
+    void updatePedido(Long id, PedidoDTO dto);
 }

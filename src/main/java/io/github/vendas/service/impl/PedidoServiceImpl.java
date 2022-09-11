@@ -37,20 +37,21 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public Pedido savePedido(PedidoDTO dto) {
         Cliente cliente = clienteRepo.findById(dto.getIdCliente())
-                .orElseThrow(() -> new ClienteNotFoundException(""));
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente não encontrado!"));
 
-        Pedido novoPedido = new Pedido();
-        novoPedido.setCliente(cliente);
-        novoPedido.setDataPedido(LocalDate.now());
+        Pedido pedido = new Pedido();
+        pedido.setCliente(cliente);
+        pedido.setDataPedido(LocalDate.now());
 
-        Set<ItemPedido> itens = converteLista(dto.getItens(), novoPedido);
+        Set<ItemPedido> itens = converteLista(dto.getItens(), pedido);
 
-        novoPedido.setValorTotal(calcularValorTotal(itens));
-        pedidoRepo.save(novoPedido);
+        pedido.setValorTotal(calculaValorTotal(itens));
+
+        pedidoRepo.save(pedido);
         itemPedidoRepo.saveAll(itens);
-        novoPedido.setItensPedido(itens);
+        pedido.setItensPedido(itens);
 
-        return novoPedido;
+        return pedido;
     }
 
     @Override
@@ -73,18 +74,39 @@ public class PedidoServiceImpl implements PedidoService {
         return itemPedidoRepo.FindByPedido(id);
     }
 
+    @Override
+    public Pedido getPedidoById(Long id) {
+        return pedidoRepo.findById(id)
+                .orElseThrow(() -> new ProdutoNotFoundException("pedido de id: " + id + ", não encontrado!"));
+    }
+
+    @Override
+    public void updatePedido(Long id, PedidoDTO dto) {
+        Pedido pedido = pedidoRepo.findById(id)
+                .orElseThrow(() -> new PedidoNotFoundException("pedido de id: " + id + ", não encontrado!"));
+
+        Cliente cliente = clienteRepo.findById(dto.getIdCliente())
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente não encontrado!"));
+
+        pedido.setDataPedido(LocalDate.now());
+        pedido.setCliente(cliente);
+
+        pedidoRepo.save(pedido);
+    }
+
     private Set<ItemPedido> converteLista (Set<ItemPedidoDTO> itensPedido, Pedido pedido) {
         return itensPedido
                 .stream()
                 .map(item -> {
                     Produto produto = produtoRepo.findById(item.getIdProduto())
                             .orElseThrow(() -> new ProdutoNotFoundException("Produto de id: " + item.getIdProduto() + ", não encontrado."));
-                    return new ItemPedido(pedido, produto, item.getQuantidade());
+
+                        return new ItemPedido(pedido, produto, item.getQuantidade());
                 })
                 .collect(Collectors.toSet());
     }
 
-    private BigDecimal calcularValorTotal (Set<ItemPedido> itemPedidos){
+    private BigDecimal calculaValorTotal(Set<ItemPedido> itemPedidos){
 
         return BigDecimal.valueOf(
                 itemPedidos.stream()

@@ -23,6 +23,11 @@ public class PedidoController {
         return pedidoService.getAllPedidos();
     }
 
+    @GetMapping("/{id}")
+    public Pedido getPedidoById(@PathVariable Long id) {
+        return pedidoService.getPedidoById(id);
+    }
+
     @GetMapping("/{id}/itens")
     public Set<ItemPedido> getAllItemPedido(@PathVariable Long id) {
         return pedidoService.findItemPedidoByPedidoId(id);
@@ -32,6 +37,12 @@ public class PedidoController {
     @ResponseStatus(HttpStatus.CREATED)
     public Pedido savePedido(@RequestBody PedidoDTO pedidoDTO) {
         return pedidoService.savePedido(pedidoDTO);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePedido(@PathVariable Long id, @RequestBody PedidoDTO pedidoDTO) {
+        pedidoService.updatePedido(id, pedidoDTO);
     }
 
     @DeleteMapping("/{id}")
