@@ -3,21 +3,19 @@ package io.github.vendas.rest.controller;
 import io.github.vendas.domain.entities.Cliente;
 import io.github.vendas.exceptions.InvalidCPFException;
 import io.github.vendas.service.impl.ClienteServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
 
     private final ClienteServiceImpl clienteServiceImpl;
-
-    public ClienteController(ClienteServiceImpl clienteServiceImpl) {
-        this.clienteServiceImpl = clienteServiceImpl;
-    }
 
     @GetMapping
     public List<Cliente> getAllClientes() {
@@ -37,21 +35,13 @@ public class ClienteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cliente saveNewCliente(@RequestBody Cliente cliente) {
-        try {
-            return clienteServiceImpl.SaveCliente(cliente);
-        } catch (InvalidCPFException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+        return clienteServiceImpl.SaveCliente(cliente);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
-        try {
-            clienteServiceImpl.updateCliente(id, cliente);
-        } catch (InvalidCPFException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+        clienteServiceImpl.updateCliente(id, cliente);
     }
 
     @DeleteMapping("/{id}")

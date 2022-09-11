@@ -2,6 +2,7 @@ package io.github.vendas.rest.controller;
 
 import io.github.vendas.domain.entities.ItemPedido;
 import io.github.vendas.domain.entities.Pedido;
+import io.github.vendas.rest.dto.ItemPedidoDTO;
 import io.github.vendas.rest.dto.PedidoDTO;
 import io.github.vendas.service.PedidoService;
 import lombok.RequiredArgsConstructor;

@@ -2,20 +2,18 @@ package io.github.vendas.rest.controller;
 
 import io.github.vendas.domain.entities.Produto;
 import io.github.vendas.service.impl.ProdutoServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutoController {
 
     private final ProdutoServiceImpl produtoServiceImpl;
-
-    public ProdutoController(ProdutoServiceImpl produtoServiceImpl) {
-        this.produtoServiceImpl = produtoServiceImpl;
-    }
 
     @GetMapping
     public List<Produto> findAllProdutos() {

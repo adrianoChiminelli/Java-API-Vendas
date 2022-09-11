@@ -2,6 +2,7 @@ package io.github.vendas.service;
 
 import io.github.vendas.domain.entities.ItemPedido;
 import io.github.vendas.domain.entities.Pedido;
+import io.github.vendas.rest.dto.ItemPedidoDTO;
 import io.github.vendas.rest.dto.PedidoDTO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,4 +23,5 @@ public interface PedidoService {
     Pedido getPedidoById(Long id);
 
     void updatePedido(Long id, PedidoDTO dto);
+
 }
