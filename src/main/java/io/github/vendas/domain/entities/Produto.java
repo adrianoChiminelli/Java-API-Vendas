@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -20,11 +22,14 @@ public class Produto {
     private Long id;
 
     @Column(nullable = false)
+    @NotEmpty(message = "Campo descrição do produto não pode estar vazio!")
     private String descricao;
 
     @Column(precision = 20, scale = 2)
+    @NotNull(message = "O preço do produto deve ser informado!")
     private BigDecimal preco;
 
+    @NotNull(message = "A quantidade de estoque do produto deve ser informado!")
     private Integer quantidadeEstoque;
 
     public Produto(String descricao, BigDecimal preco, Integer quantidadeEstoque) {

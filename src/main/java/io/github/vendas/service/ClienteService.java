@@ -1,13 +1,13 @@
 package io.github.vendas.service;
 
 import io.github.vendas.domain.entities.Cliente;
-import io.github.vendas.exceptions.InvalidCPFException;
+import io.github.vendas.exceptions.CPFAlreadyExistsException;
 
 import java.util.List;
 
 public interface ClienteService {
 
-    Cliente SaveCliente(Cliente cliente) throws InvalidCPFException;
+    Cliente SaveCliente(Cliente cliente);
 
     List<Cliente> findAllClientes();
 
@@ -15,7 +15,7 @@ public interface ClienteService {
 
     void deleteCliente(Long id);
 
-    void updateCliente(Long id, Cliente cliente) throws InvalidCPFException;
+    void updateCliente(Long id, Cliente cliente);
 
     List<Cliente> findClientesByFilter(Cliente filter);
 }

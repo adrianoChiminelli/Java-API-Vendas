@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -36,13 +37,13 @@ public class PedidoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Pedido savePedido(@RequestBody PedidoDTO pedidoDTO) {
+    public Pedido savePedido(@RequestBody @Valid PedidoDTO pedidoDTO) {
         return pedidoService.savePedido(pedidoDTO);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updatePedido(@PathVariable Long id, @RequestBody PedidoDTO pedidoDTO) {
+    public void updatePedido(@PathVariable Long id, @RequestBody @Valid PedidoDTO pedidoDTO) {
         pedidoService.updatePedido(id, pedidoDTO);
     }
 

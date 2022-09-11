@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class ProdutoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Produto saveNewProduto (@RequestBody Produto produto) {
+    public Produto saveNewProduto (@RequestBody @Valid Produto produto) {
         return produtoServiceImpl.saveProduto(produto);
     }
 
@@ -44,7 +45,7 @@ public class ProdutoController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateProduto(@PathVariable Long id, @RequestBody Produto produto) {
+    public void updateProduto(@PathVariable Long id, @RequestBody @Valid Produto produto) {
         produtoServiceImpl.updateProduto(id, produto);
     }
 

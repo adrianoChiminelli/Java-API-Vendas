@@ -1,13 +1,12 @@
 package io.github.vendas.rest.controller;
 
 import io.github.vendas.domain.entities.Cliente;
-import io.github.vendas.exceptions.InvalidCPFException;
 import io.github.vendas.service.impl.ClienteServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -34,13 +33,13 @@ public class ClienteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cliente saveNewCliente(@RequestBody Cliente cliente) {
+    public Cliente saveNewCliente(@RequestBody @Valid Cliente cliente) {
         return clienteServiceImpl.SaveCliente(cliente);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public void updateCliente(@PathVariable Long id, @RequestBody @Valid Cliente cliente) {
         clienteServiceImpl.updateCliente(id, cliente);
     }
 
