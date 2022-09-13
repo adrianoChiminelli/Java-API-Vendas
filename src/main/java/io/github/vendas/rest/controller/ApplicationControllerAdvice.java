@@ -60,4 +60,10 @@ public class ApplicationControllerAdvice {
         return new ApiErrors(message);
     }
 
+    @ExceptionHandler(UsuarioNotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ApiErrors handleUsuarioNotFoundException(UsuarioNotFoundException ex) {
+        String message = ex.getMessage();
+        return new ApiErrors(message);
+    }
 }
